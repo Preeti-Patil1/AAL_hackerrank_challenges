@@ -1,0 +1,58 @@
+#!/bin/python3
+
+import math
+import os
+import random
+import re
+import sys
+
+def maximumPeople(p, x, y, r):
+    n=len(p)
+    m=len(y)
+    cloud_pop_effect = [0]*m
+    cloud_coverage= [[]for _ in range(n)]
+    initial_sunny_population=0
+    
+    for i in range(m):
+        cloud_center = y[i]
+        cloud_radius = r[i]
+        for j in range(n):
+            town_location = x[j]
+            if abs(cloud_center - town_location) <=cloud_radius:
+                cloud_coverage[j].append(i)
+                cloud_pop_effect[i] += p[j]
+                
+    for i in range(n):
+        if len(cloud_coverage[i])==0:
+            initial_sunny_population +=p[i]
+                
+    max_additional_sunny_population = 0
+    for i in range(m):
+        additional_sunny_population = 0
+        for j in range(n):
+            if len(cloud_coverage[j]) == 1 and cloud_coverage[j][0] == i:
+                additional_sunny_population += p[j]
+        max_additional_sunny_population = max(max_additional_sunny_population, additional_sunny_population)
+
+    return initial_sunny_population + max_additional_sunny_population
+        
+if __name__ == '__main__':
+    fptr = open(os.environ['OUTPUT_PATH'], 'w')
+
+    n = int(input().strip())
+
+    p = list(map(int, input().rstrip().split()))
+
+    x = list(map(int, input().rstrip().split()))
+
+    m = int(input().strip())
+
+    y = list(map(int, input().rstrip().split()))
+
+    r = list(map(int, input().rstrip().split()))
+
+    result = maximumPeople(p, x, y, r)
+
+    fptr.write(str(result) + '\n')
+
+    fptr.close()
